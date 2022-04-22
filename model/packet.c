@@ -33,7 +33,7 @@ struct packet {
     // precision of local clock in seconds to nearest powerr of two
     uint16_t precision;
     
-    // estimated erro of local clock
+    // estimated error of local clock
     uint32_t estimated_error;
 
     // estimated drift rate of local clock
@@ -50,6 +50,12 @@ struct packet {
 
     /*
      * timestamps to calculate error
+     *
+     * NTP timestamps are represented as a 64-bit fixed-point number, in
+     * seconds relative to 0000 UT on 1 January 1900
+     * 
+     * The integer part is
+     * in the first 32 bits and the fraction part in the last 32 bits
      */ 
     uint64_t reference_timestamp;
     uint64_t originate_timestamp;
