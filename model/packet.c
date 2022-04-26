@@ -1,5 +1,30 @@
 #include <stdint.h>
 
+// LEAP INDICATOR VALUES
+#define LEAP_NO_WARNING 0x0
+#define LEAP_PLUS_ONE 0x1
+#define LEAP_MINUS_ONE 0x2
+#define LEAP_UNDEFINED 0X3
+
+// STATUS VALUES
+#define STATUS_CLOCK_OK 0
+#define STATUS_CARRIER_LOSS 1
+#define STATUS_SYNCH_LOSS 2
+#define STATUS_FORMAT_ERROR 3
+#define STATUS_INTERFACE_OR_LINK_FAILURE 4
+
+// REFERENCE CLOCK TYPE VALUES
+#define REF_CLOCK_TYPE_UNSPECIFIED 0
+#define REF_CLOCK_TYPE_PRIMARY 0
+#define REF_CLOCK_TYPE_SECONDARY_INTERNET_HOST 0
+#define REF_CLOCK_TYPE_SECONDARY_OTHER 0
+#define REF_CLOCK_TYPE_EYEBALL 0
+
+// TYPE OF CLOCK VALUES
+#define CLOCK_TYPE_WWVB_RADIO "WWVB"
+#define CLOCK_TYPE_GOES_SATELITE "GOES"
+#define CLOCK_TYPE_WWV_RADIO "WWV"
+
 struct packet {
     /*
      * 2 bits leap indicator
@@ -62,3 +87,20 @@ struct packet {
     uint64_t receive_timestamp;
     uint64_t transmit_timestamp;
 };
+
+typedef struct packet NTPPacket;
+
+
+/* 
+ * Function to build the binary for the li_and_status member of the packet
+ * 
+ * @Param link_indicator: binary value containing only the link indicator value
+ * 
+ * @Param status: binary value containing only the status information
+ * 
+ * @Return: Two values mounted according to the spec
+ */
+uint8_t build_li_and_status(uint8_t link_indicator, uint8_t status) {
+    uint8_t li_and_status_result = link_indicator << 6;
+    return li_and_status_result | status;
+}
