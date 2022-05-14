@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdio.h>
 
 // LEAP INDICATOR VALUES
 #define LEAP_NO_WARNING 0x0
@@ -24,6 +25,8 @@
 #define CLOCK_TYPE_WWVB_RADIO "WWVB"
 #define CLOCK_TYPE_GOES_SATELITE "GOES"
 #define CLOCK_TYPE_WWV_RADIO "WWV"
+
+#define PACKET_SIZE 384
 
 struct packet {
     /*
@@ -71,7 +74,7 @@ struct packet {
      * WWV     WWV radio clock (2.5/5/10/15/20 MHz)
      * (and others as necessary)
      */
-    uint32_t reference_clock_id;
+    char reference_clock_id [4];
 
     /*
      * timestamps to calculate error
@@ -102,5 +105,33 @@ typedef struct packet NTPPacket;
  */
 uint8_t build_li_and_status(uint8_t link_indicator, uint8_t status) {
     uint8_t li_and_status_result = link_indicator << 6;
-    return li_and_status_result | status;
+    return (uint8_t) (li_and_status_result | status);
+}
+
+void NTPPacket__initialize(NTPPacket *packet) {
+    packet->estimated_drift_rate = 0;
+    packet->estimated_error = 0;
+    packet->li_and_status = 0;
+    packet->originate_timestamp = 0;
+    packet->precision = 0;
+    packet->receive_timestamp = 0;
+    strcpy(packet->reference_clock_id, "");
+    packet->reference_clock_type = 0;
+    packet->reference_timestamp = 0;
+    packet->transmit_timestamp = 0;
+}
+
+void NTPPacket__print(NTPPacket packet) {
+    printf("NTPPacket = {\n");
+    printf("    li_and_status: %d\n", packet.li_and_status);
+    printf("    reference_clock_type: %d\n", packet.reference_clock_type);
+    printf("    precision: %d\n", packet.precision);
+    printf("    estimated_error: %d\n", packet.estimated_error);
+    printf("    estimated_drift_rate: %d\n", packet.estimated_drift_rate);
+    printf("    reference_clock_id: %s\n", packet.reference_clock_id);
+    printf("    reference_timestamp: %ld\n", packet.reference_timestamp);
+    printf("    originate_timestamp: %ld\n", packet.originate_timestamp);
+    printf("    receive_timestamp: %ld\n", packet.receive_timestamp);
+    printf("    transmit_timestamp: %ld\n", packet.transmit_timestamp);
+    printf("}\n");
 }
