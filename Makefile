@@ -21,10 +21,13 @@ client: network
 	$(RUN_CLIENT)
 
 
-network: request
+network: request listen
 
 request:
 	$(CC) $(CFLAGS) -c $(NETWORK_PATH)/request.c -o $(OUT_PATH)/$(NETWORK_PATH)/request.o 
+
+request:
+	$(CC) $(CFLAGS) -c $(NETWORK_PATH)/listen.c -o $(OUT_PATH)/$(NETWORK_PATH)/listen.o 
 
 
 clear:
