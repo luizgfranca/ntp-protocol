@@ -15,7 +15,7 @@
  * @return <= 0 if failed,
  *            transmitted bytes if success 
  */
-int send_udp_request(
+NTPPacket* send_udp_request(
     char * null_terminated_address, 
     int port, 
     void * message, 

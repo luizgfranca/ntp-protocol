@@ -3,4 +3,4 @@ typedef struct request_message {
     int length;
 } RequestMessage;
 
-RequestMessage* udp_listen(int port);
+RequestMessage* udp_listen(int port, void (*callback)(RequestMessage*)) ;

@@ -1,4 +1,4 @@
-CC = g++
+CC = gcc
 CFLAGS = -Wall -g 
 
 OUT_PATH = out
@@ -26,7 +26,7 @@ network: request listen
 request:
 	$(CC) $(CFLAGS) -c $(NETWORK_PATH)/request.c -o $(OUT_PATH)/$(NETWORK_PATH)/request.o 
 
-request:
+listen:
 	$(CC) $(CFLAGS) -c $(NETWORK_PATH)/listen.c -o $(OUT_PATH)/$(NETWORK_PATH)/listen.o 
 
 

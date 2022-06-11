@@ -1,4 +1,5 @@
 #include "request.h"
+#include "../model/packet.c"
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -6,12 +7,17 @@
 #include <sys/socket.h>
 #include <stdio.h>
 
-int send_udp_request(
+NTPPacket* send_udp_request(
     char * null_terminated_address, 
     int port, 
     void * message, 
     int message_length
 ) {
+    //struct with network information of the destinatary
+    struct sockaddr_in destinatary;
+    
+    NTPPacket* response_packet = (NTPPacket*) malloc(sizeof(NTPPacket));
+    
     /*
      * socket openning
      * AF_INET: IPV4
@@ -23,8 +29,6 @@ int send_udp_request(
         return -1;
     }
 
-    //struct with network information of the destinatary
-    struct sockaddr_in destinatary;
     
     // Address used is IPV4
     destinatary.sin_family = AF_INET; 
@@ -44,7 +48,18 @@ int send_udp_request(
         MSG_CONFIRM,
         (const struct sockaddr *) &destinatary,
         sizeof(destinatary)
-    );
+        );
 
-    return sent_length;
+
+    // waits for a response from the server (in NTP the response has the same format)
+    recvfrom(
+        socket_fd, 
+        (void*) response_packet, 
+        sizeof(NTPPacket), 
+        MSG_WAITALL, 
+        (const struct sockaddr *) &destinatary, 
+        sizeof(destinatary)
+        );
+
+    return response_packet;
 }
